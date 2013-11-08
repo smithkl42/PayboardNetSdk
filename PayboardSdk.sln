@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payboard.Sdk", "Payboard.Sdk\Payboard.Sdk.csproj", "{2BD123D6-1857-4C83-ACE6-78C950BCEE14}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E82732AE-BC21-4D99-9918-BE344BEDB9F0}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payboard.Sdk.Tests", "Payboard.Sdk.Tests\Payboard.Sdk.Tests.csproj", "{45C9C231-25E9-4859-8CD2-19E2110A7184}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payboard.Sdk.Demo", "Payboard.Sdk.Demo\Payboard.Sdk.Demo.csproj", "{A405D909-3F0D-4AC6-8D0D-27CEAC8BDAA2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2BD123D6-1857-4C83-ACE6-78C950BCEE14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BD123D6-1857-4C83-ACE6-78C950BCEE14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BD123D6-1857-4C83-ACE6-78C950BCEE14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BD123D6-1857-4C83-ACE6-78C950BCEE14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45C9C231-25E9-4859-8CD2-19E2110A7184}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45C9C231-25E9-4859-8CD2-19E2110A7184}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45C9C231-25E9-4859-8CD2-19E2110A7184}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45C9C231-25E9-4859-8CD2-19E2110A7184}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A405D909-3F0D-4AC6-8D0D-27CEAC8BDAA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A405D909-3F0D-4AC6-8D0D-27CEAC8BDAA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A405D909-3F0D-4AC6-8D0D-27CEAC8BDAA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A405D909-3F0D-4AC6-8D0D-27CEAC8BDAA2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
