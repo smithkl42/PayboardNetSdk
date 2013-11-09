@@ -6,12 +6,10 @@ namespace Payboard.Sdk.Infrastructure
 {
     public static class Requestor
     {
-        private const string BaseUrl = "https://app.payboard.com/";
-
         public static HttpClient GetClient()
         {
             var client = new HttpClient();
-            client.BaseAddress = new Uri(BaseUrl);
+            client.BaseAddress = new Uri(PayboardConfiguration.BaseUrl);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             return client;
         }
