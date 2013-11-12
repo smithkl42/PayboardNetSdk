@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using Payboard.Sdk.Entities;
 using Payboard.Sdk.Services;
-
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.SqlClient;
@@ -14,21 +12,22 @@ namespace Payboard.Sdk.Demo
 {
     internal class Program
     {
-        private static string userName = "<ProvideUserName>";
-        private static string password = "<ProvidePassword>";
-        private static string dataSource = "<ProvideServerName>";
-        private static string sampleDatabaseName = "<ProvideDatabaseName>";
 
         private static void Main(string[] args)
         {
 
 
-            String connString = "Server=tcp:x8al0jxqwf.database.windows.net,1433;Database=PayboardProdDb;User ID=PayGrid@x8al0jxqwf;Password=3Edy26Pr95757ki;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;";
+            //String connString = "Server=tcp:x8al0jxqwf.database.windows.net,1433;Database=PayboardProdDb;User ID=PayGrid@x8al0jxqwf;Password=3Edy26Pr95757ki;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;";
+            String connString = "Server=tcp:ubch569rcn.database.windows.net,1433;Database=socedo_db_beta;User ID=socedo_readonly_login@ubch569rcn;Password=GoPayboard!123;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;";
             SqlConnection conn = new SqlConnection(connString);
 
             //Open connection
             conn.Open();
-            String commandText = "SELECT top 5 * from [user] where firstname='Matt'";
+
+            //make it check every N hours, and then run a cron job the same interval WHERE DateTime > GetDate()-1 day
+            String commandText = "SELECT top 5 AccountId, AccountId as FirstName, AccountId as LastName, AccountId as Email  from [AccountStatus] WHERE CreatedOnUtc > dateadd(day,-1, getdate())";
+
+
             SqlCommand command = new SqlCommand(commandText, conn);
 
             //select items from a database, and var them out
@@ -42,14 +41,14 @@ namespace Payboard.Sdk.Demo
                 {
                     var event1 = new CustomerUserEvent();
                     event1.CustomerId = dataReader.GetInt32(0).ToString();
-                    event1.CustomerName = dataReader.GetString(2) + " " + dataReader.GetString(3);
                     event1.CustomerUserId = dataReader.GetInt32(0).ToString();
-                    event1.CustomerUserEmail = dataReader.GetString(4);
-                    event1.CustomerUserFirstName = dataReader.GetString(2);
-                    event1.CustomerUserLastName = dataReader.GetString(3);
+                    event1.CustomerName = "Bob Jones";
+                    event1.CustomerUserFirstName = "Bob";
+                    event1.CustomerUserLastName = "Jones";
+                    event1.CustomerUserEmail = "bob@payboard.com";
+                    //event1.CustomerUserEmail = dataReader.GetString(3);
                     event1.EventName = "TestEventRecorded";
                     events.Add(event1);
-                    //Console.WriteLine("\t{0}\t\t{1}", dataReader.GetString(0), dataReader.GetString(1));
                 }
                     
             }
@@ -67,7 +66,20 @@ namespace Payboard.Sdk.Demo
 
 
             var service = new EventService();
-            
+            //single event syntax
+            //service.TrackCustomerUserEvent(events.First()).ContinueWith(result =>
+            //    {
+            //        if (result.IsFaulted)
+            //        {
+            //            Console.WriteLine(result.Exception);
+            //        }
+            //        else
+            //        {
+            //            Console.WriteLine("The event was recorded");
+            //        }
+            //    });
+
+            //multiple event syntax
             service.TrackCustomerUserEvents(events).ContinueWith(result =>
                 {
                     if (result.IsFaulted)
