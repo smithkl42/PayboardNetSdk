@@ -20,15 +20,15 @@ namespace Payboard.Sdk.Services
 
         private readonly string _apiKey;
 
-        public Task TrackCustomerUserEvent(CustomerUserEvent @event)
+        public Task TrackCustomerUserEvent(CustomerUserEvent @event, bool setSynchronizedOn = false)
         {
-            return TrackCustomerUserEvents(new List<CustomerUserEvent> { @event });
+            return TrackCustomerUserEvents(new List<CustomerUserEvent> { @event }, setSynchronizedOn);
         }
 
-        public async Task TrackCustomerUserEvents(List<CustomerUserEvent> events)
+        public async Task TrackCustomerUserEvents(List<CustomerUserEvent> events, bool setSynchronizedOn = false)
         {
             var client = Requestor.GetClient();
-            var url = string.Format("/api/organizations/{0}/customeruserevents/", _apiKey);
+            var url = string.Format("/api/organizations/{0}/customeruserevents/?setSynchronizedOn={1}", _apiKey, setSynchronizedOn);
             var response = await client.PostAsJsonAsync(url, events);
             if (!response.IsSuccessStatusCode)
             {
