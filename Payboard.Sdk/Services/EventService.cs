@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Payboard.Sdk.Entities;
 using Payboard.Sdk.Infrastructure;
 
@@ -10,6 +9,8 @@ namespace Payboard.Sdk.Services
 {
     public class EventService
     {
+        private readonly string _apiKey;
+
         public EventService()
         {
             _apiKey = PayboardConfiguration.PublicApiKey;
@@ -20,17 +21,16 @@ namespace Payboard.Sdk.Services
             _apiKey = apiKey;
         }
 
-        private readonly string _apiKey;
-
         public Task TrackCustomerUserEvent(CustomerUserEvent @event, bool setSynchronizedOn = false)
         {
-            return TrackCustomerUserEvents(new List<CustomerUserEvent> { @event }, setSynchronizedOn);
+            return TrackCustomerUserEvents(new List<CustomerUserEvent> {@event}, setSynchronizedOn);
         }
 
         public async Task TrackCustomerUserEvents(List<CustomerUserEvent> events, bool setSynchronizedOn = false)
         {
             var client = Requestor.GetClient();
-            var url = string.Format("/api/organizations/{0}/customeruserevents/?setSynchronizedOn={1}", _apiKey, setSynchronizedOn);
+            var url = string.Format("/api/organizations/{0}/customeruserevents/?setSynchronizedOn={1}", _apiKey,
+                setSynchronizedOn);
             var response = await client.PostAsJsonAsync(url, events);
             if (!response.IsSuccessStatusCode)
             {

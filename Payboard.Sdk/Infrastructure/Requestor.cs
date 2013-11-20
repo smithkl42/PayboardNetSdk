@@ -10,7 +10,7 @@ namespace Payboard.Sdk.Infrastructure
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.BaseAddress = new Uri(PayboardConfiguration.BaseUrl);            
+            client.BaseAddress = new Uri(PayboardConfiguration.BaseUrl);
             return client;
         }
     }

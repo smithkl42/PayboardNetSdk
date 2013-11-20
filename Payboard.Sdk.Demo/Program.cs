@@ -10,13 +10,15 @@ namespace Payboard.Sdk.Demo
     {
         private static void Main(string[] args)
         {
-            const string connString = "Server=tcp:x8al0jxqwf.database.windows.net,1433;Database=PayboardProdDb;User ID=PayGrid@x8al0jxqwf;Password=3Edy26Pr95757ki;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;";
+            const string connString =
+                "Server=tcp:x8al0jxqwf.database.windows.net,1433;Database=PayboardProdDb;User ID=PayGrid@x8al0jxqwf;Password=3Edy26Pr95757ki;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;";
             var conn = new SqlConnection(connString);
             var service = new EventService();
             service.GetLastSynchronizedOn().ContinueWith(syncResult =>
             {
                 // Not used at the moment - just showing how it's done.
                 var lastSynchronizedOn = syncResult.Result ?? DateTime.UtcNow.AddDays(-1);
+                Console.WriteLine("Last synchronized on: {0}", lastSynchronizedOn);
             });
 
             //Open connection
