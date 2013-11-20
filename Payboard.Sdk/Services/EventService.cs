@@ -42,20 +42,11 @@ namespace Payboard.Sdk.Services
         {
             var client = Requestor.GetClient();
             var url = string.Format("/api/organizations/{0}/lastsynchronizedon", _apiKey);
-            var response = await client.GetAsync(url);
-            if (!response.IsSuccessStatusCode)
+            var response = await client.GetStringAsync(url);
+            DateTime lastSynchronizedOn;
+            if (DateTime.TryParse(response, out lastSynchronizedOn))
             {
-                throw new PayboardException(response.StatusCode, response.ReasonPhrase);
-            }
-            var content = await response.Content.ReadAsStringAsync();
-            var dateString = JsonConvert.DeserializeObject<string>(content);
-            if (!string.IsNullOrWhiteSpace(dateString))
-            {
-                DateTime lastSynchronizedOn;
-                if (DateTime.TryParse(dateString, out lastSynchronizedOn))
-                {
-                    return lastSynchronizedOn;
-                }
+                return lastSynchronizedOn;
             }
             return null;
         }
