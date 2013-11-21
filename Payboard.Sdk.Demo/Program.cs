@@ -17,7 +17,7 @@ namespace Payboard.Sdk.Demo
             service.GetLastSynchronizedOn().ContinueWith(syncResult =>
             {
                 // Not used at the moment - just showing how it's done.
-                var lastSynchronizedOn = syncResult.Result ?? DateTime.UtcNow.AddDays(-1);
+                var lastSynchronizedOn = syncResult.Result;
                 Console.WriteLine("Last synchronized on: {0}", lastSynchronizedOn);
             });
 

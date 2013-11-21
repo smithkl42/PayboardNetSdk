@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Payboard.Sdk.Entities;
 using Payboard.Sdk.Infrastructure;
 
@@ -43,8 +44,9 @@ namespace Payboard.Sdk.Services
             var client = Requestor.GetClient();
             var url = string.Format("/api/organizations/{0}/lastsynchronizedon", _apiKey);
             var response = await client.GetStringAsync(url);
+            var dateString = JsonConvert.DeserializeObject<string>(response);
             DateTime lastSynchronizedOn;
-            if (DateTime.TryParse(response, out lastSynchronizedOn))
+            if (DateTime.TryParse(dateString, out lastSynchronizedOn))
             {
                 return lastSynchronizedOn;
             }
