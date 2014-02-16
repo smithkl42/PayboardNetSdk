@@ -39,6 +39,18 @@ namespace Payboard.Sdk.Services
             }
         }
 
+        public async Task UploadCsv(string csv, bool hasHeaders = false, string syncToken = null, bool setSynchronizedOn = false)
+        {
+            var client = Requestor.GetClient();
+            var url = string.Format("/api/organizations/{0}/customerusereventscsv/?setSynchronizedOn={1}&syncToken={2}&hasHeaders={3}",
+                _apiKey, setSynchronizedOn, syncToken, hasHeaders);
+            var response = await client.PostAsJsonAsync(url, csv);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new PayboardException(response.StatusCode, response.ReasonPhrase);
+            }
+        }
+
         public async Task<DateTime?> GetLastSynchronizedOn()
         {
             var client = Requestor.GetClient();
