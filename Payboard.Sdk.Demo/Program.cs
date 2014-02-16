@@ -21,6 +21,13 @@ namespace Payboard.Sdk.Demo
                 Console.WriteLine("Last synchronized on: {0}", lastSynchronizedOn);
             });
 
+            service.GetLastSyncToken().ContinueWith(syncResult =>
+            {
+                // Not used at the moment - just showing how it's done.
+                var lastSynctoken = syncResult.Result;
+                Console.WriteLine("Last synchronized on: {0}", lastSynctoken);
+            });
+
             //Open connection
             conn.Open();
             const string commandText = "SELECT top 5 * from [user] where firstname='Matt'";
@@ -53,7 +60,7 @@ namespace Payboard.Sdk.Demo
             dataReader.Close();
             conn.Close();
 
-            service.TrackCustomerUserEvents(events, true).ContinueWith(result =>
+            service.TrackCustomerUserEvents(events, Guid.NewGuid().ToString(), true).ContinueWith(result =>
             {
                 if (result.IsFaulted)
                 {

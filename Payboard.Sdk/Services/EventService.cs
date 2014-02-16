@@ -22,16 +22,16 @@ namespace Payboard.Sdk.Services
             _apiKey = apiKey;
         }
 
-        public Task TrackCustomerUserEvent(CustomerUserEvent @event, bool setSynchronizedOn = false)
+        public Task TrackCustomerUserEvent(CustomerUserEvent @event, string syncToken= null, bool setSynchronizedOn = false)
         {
-            return TrackCustomerUserEvents(new List<CustomerUserEvent> {@event}, setSynchronizedOn);
+            return TrackCustomerUserEvents(new List<CustomerUserEvent> {@event}, syncToken, setSynchronizedOn);
         }
 
-        public async Task TrackCustomerUserEvents(List<CustomerUserEvent> events, bool setSynchronizedOn = false)
+        public async Task TrackCustomerUserEvents(List<CustomerUserEvent> events, string syncToken = null, bool setSynchronizedOn = false)
         {
             var client = Requestor.GetClient();
-            var url = string.Format("/api/organizations/{0}/customeruserevents/?setSynchronizedOn={1}", _apiKey,
-                setSynchronizedOn);
+            var url = string.Format("/api/organizations/{0}/customeruserevents/?setSynchronizedOn={1}&syncToken={2}", 
+                _apiKey, setSynchronizedOn, syncToken);
             var response = await client.PostAsJsonAsync(url, events);
             if (!response.IsSuccessStatusCode)
             {
@@ -51,6 +51,15 @@ namespace Payboard.Sdk.Services
                 return lastSynchronizedOn;
             }
             return null;
+        }
+
+        public async Task<string> GetLastSyncToken()
+        {
+            var client = Requestor.GetClient();
+            var url = string.Format("/api/organizations/{0}/lastsynctoken", _apiKey);
+            var response = await client.GetStringAsync(url);
+            var syncToken = JsonConvert.DeserializeObject<string>(response);
+            return syncToken;
         }
     }
 }
