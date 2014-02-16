@@ -1,4 +1,6 @@
-﻿namespace Payboard.Sdk.Entities
+﻿using System;
+
+namespace Payboard.Sdk.Entities
 {
     public class CustomerUserEvent
     {
@@ -9,6 +11,7 @@
         public string CustomerUserLastName { get; set; }
         public string CustomerUserEmail { get; set; }
         public string EventName { get; set; }
+        public DateTime? OccurredOn { get; set; }
         public string Url { get; set; }
         public string Params { get; set; }
     }
