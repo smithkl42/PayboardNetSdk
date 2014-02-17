@@ -6,8 +6,6 @@ namespace Payboard.Sdk.Infrastructure
     [Serializable]
     public class PayboardException : ApplicationException
     {
-        public HttpStatusCode HttpStatusCode { get; set; }
-
         public PayboardException()
         {
         }
@@ -17,5 +15,7 @@ namespace Payboard.Sdk.Infrastructure
         {
             HttpStatusCode = httpStatusCode;
         }
+
+        public HttpStatusCode HttpStatusCode { get; set; }
     }
 }

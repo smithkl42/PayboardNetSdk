@@ -7,13 +7,10 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Data;
 
-
 namespace Payboard.Sdk.Demo
 {
     internal class Program
     {
-
-
         public static void AddEvents(string commandText)
         {
             String connString = "Server=tcp:ubch569rcn.database.windows.net,1433;Database=socedo_db_beta;User ID=socedo_readonly_login@ubch569rcn;Password=GoPayboard!123;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;";
@@ -59,7 +56,6 @@ namespace Payboard.Sdk.Demo
             //Close the database connection
             conn.Close();
 
-
             var service = new EventService();
 
             service.TrackCustomerUserEvents(events).ContinueWith(result =>
@@ -76,13 +72,8 @@ namespace Payboard.Sdk.Demo
             return; 
         }
 
-
-
         private static void Main(string[] args)
         {
-
-
-            
             //make it check every N hours, and then run a cron job the same interval WHERE DateTime > GetDate()-1 day
             String commandText1 = "select  c.id as CustomerId, c.name as CustomerName, c.id as CustomerUserId, ac.UserName as Email, SUBSTRING(c.Name, 1, CHARINDEX(' ', c.Name)-1) AS FirstName, SUBSTRING( c.Name, CHARINDEX(' ',  c.Name) + 1, CHARINDEX('''',  c.Name)-CHARINDEX(' ', c.Name)-1) AS LastName, 'SocedoRegistration' as EventName from aspnet_Users u inner join AccessControl ac on u.UserName = ac.UserName inner join Community c on ac.CommunityID = c.id WHERE c.CreatedUtc > dateadd(day,-1, getdate())";
             AddEvents(commandText1);
@@ -96,7 +87,6 @@ namespace Payboard.Sdk.Demo
             String commandText4 = "select DISTINCT  c.id as CustomerId, c.name as CustomerName, c.id as CustomerUserId, ac.UserName as Email, '' as FirstName, '' AS LastName, 'DmTemplateSet' AS EventName from aspnet_Users u inner join AccessControl ac on u.UserName = ac.UserName inner join Community c on ac.CommunityID = c.id inner join MessageTemplate mt on c.id = mt.AccountID WHERE mt.CreatedOnUtc > dateadd(day,-1, getdate())";
             AddEvents(commandText4);
             Console.ReadLine();
-
         }
     }
 }
