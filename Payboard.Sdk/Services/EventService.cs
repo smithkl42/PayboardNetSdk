@@ -15,12 +15,15 @@ namespace Payboard.Sdk.Services
         public EventService()
         {
             _apiKey = PayboardConfiguration.PublicApiKey;
+            Timeout = TimeSpan.FromMinutes(10);
         }
 
-        public EventService(string apiKey)
+        public EventService(string apiKey):this()
         {
             _apiKey = apiKey;
         }
+
+        public TimeSpan Timeout { get; set; }
 
         public Task TrackCustomerUserEvent(CustomerUserEvent @event, string syncToken= null, bool setSynchronizedOn = false)
         {
@@ -29,7 +32,7 @@ namespace Payboard.Sdk.Services
 
         public async Task TrackCustomerUserEvents(List<CustomerUserEvent> events, string syncToken = null, bool setSynchronizedOn = false)
         {
-            var client = Requestor.GetClient();
+            var client = Requestor.GetClient(Timeout.TotalMilliseconds);
             var url = string.Format("/api/organizations/{0}/customeruserevents/?setSynchronizedOn={1}&syncToken={2}", 
                 _apiKey, setSynchronizedOn, syncToken);
             var response = await client.PostAsJsonAsync(url, events);
@@ -41,7 +44,7 @@ namespace Payboard.Sdk.Services
 
         public async Task UploadCsv(string csv, bool hasHeaders = false, string syncToken = null, bool setSynchronizedOn = false)
         {
-            var client = Requestor.GetClient();
+            var client = Requestor.GetClient(Timeout.TotalMilliseconds);
             var url = string.Format("/api/organizations/{0}/customerusereventscsv/?setSynchronizedOn={1}&syncToken={2}&hasHeaders={3}",
                 _apiKey, setSynchronizedOn, syncToken, hasHeaders);
             var response = await client.PostAsJsonAsync(url, csv);
@@ -53,7 +56,7 @@ namespace Payboard.Sdk.Services
 
         public async Task<DateTime?> GetLastSynchronizedOn()
         {
-            var client = Requestor.GetClient();
+            var client = Requestor.GetClient(Timeout.TotalMilliseconds);
             var url = string.Format("/api/organizations/{0}/lastsynchronizedon", _apiKey);
             var response = await client.GetStringAsync(url);
             var dateString = JsonConvert.DeserializeObject<string>(response);
@@ -67,7 +70,7 @@ namespace Payboard.Sdk.Services
 
         public async Task<string> GetLastSyncToken()
         {
-            var client = Requestor.GetClient();
+            var client = Requestor.GetClient(Timeout.TotalMilliseconds);
             var url = string.Format("/api/organizations/{0}/lastsynctoken", _apiKey);
             var response = await client.GetStringAsync(url);
             var syncToken = JsonConvert.DeserializeObject<string>(response);
