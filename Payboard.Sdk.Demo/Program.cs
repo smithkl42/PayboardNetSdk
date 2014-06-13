@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Payboard.Sdk.Entities;
 using Payboard.Sdk.Services;
 
@@ -10,23 +12,22 @@ namespace Payboard.Sdk.Demo
     {
         private static void Main(string[] args)
         {
+            // RunDemoAsync().Wait();
+            GenerateLoadAsync(1000, 1).Wait();
+            Console.ReadLine();
+        }
+
+        private static async Task RunDemoAsync()
+        {
             const string connString =
-                "Server=tcp:x8al0jxqwf.database.windows.net,1433;Database=PayboardProdDb;User ID=PayGrid@x8al0jxqwf;Password=3Edy26Pr95757ki;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;";
+    "Server=tcp:x8al0jxqwf.database.windows.net,1433;Database=PayboardProdDb;User ID=PayGrid@x8al0jxqwf;Password=3Edy26Pr95757ki;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;";
             var conn = new SqlConnection(connString);
             var service = new EventService();
-            service.GetLastSynchronizedOn().ContinueWith(syncResult =>
-            {
-                // Not used at the moment - just showing how it's done.
-                var lastSynchronizedOn = syncResult.Result;
-                Console.WriteLine("Last synchronized on: {0}", lastSynchronizedOn);
-            });
+            var lastSynchronizedOn = await service.GetLastSynchronizedOn();
+            Console.WriteLine("Last synchronized on: {0}", lastSynchronizedOn);
 
-            service.GetLastSyncToken().ContinueWith(syncResult =>
-            {
-                // Not used at the moment - just showing how it's done.
-                var lastSynctoken = syncResult.Result;
-                Console.WriteLine("Last synchronized on: {0}", lastSynctoken);
-            });
+            var lastSynctoken = await service.GetLastSyncToken();
+            Console.WriteLine("Last synchronized on: {0}", lastSynctoken);
 
             //Open connection
             conn.Open();
@@ -55,23 +56,45 @@ namespace Payboard.Sdk.Demo
                 }
             }
             else
+            {
                 Console.WriteLine("No rows returned.");
+            }
 
             dataReader.Close();
             conn.Close();
 
-            service.TrackCustomerUserEvents(events, Guid.NewGuid().ToString(), true).ContinueWith(result =>
+            await service.TrackCustomerUserEvents(events, Guid.NewGuid().ToString(), true);
+            Console.WriteLine("The events were recorded");
+        }
+
+        private static async Task GenerateLoadAsync(int batches, int eventsPerBatch)
+        {
+            var sw = new Stopwatch();
+            sw.Start();
+            var service = new EventService();
+            var tasks = new List<Task>();
+            for (var i = 0; i < batches; i++)
             {
-                if (result.IsFaulted)
+                var events = new List<CustomerUserEvent>();
+                var customerId = Guid.NewGuid().ToString();
+                var customerUserid = Guid.NewGuid().ToString();
+                for (var j = 0; j < eventsPerBatch; j++)
                 {
-                    Console.WriteLine(result.Exception);
+                    var @event = new CustomerUserEvent();
+                    @event.CustomerId = customerId;
+                    @event.CustomerUserId = customerUserid;
+                    @event.CustomerUserEmail = customerUserid + "@gmail.com";
+                    @event.EventName = "TestEventRecorded";
+                    events.Add(@event);
                 }
-                else
-                {
-                    Console.WriteLine("The events were recorded");
-                }
-            });
-            Console.ReadLine();
+                tasks.Add(service.TrackCustomerUserEvents(events));
+                Console.WriteLine("Sending {0} events for customerUserId {1}", events.Count, customerUserid);
+            }
+            Console.WriteLine("Waiting for {0} tasks to return", tasks.Count);
+            await Task.WhenAll(tasks);
+            sw.Stop();
+            Console.WriteLine("All tasks finished; took {0} seconds, or {1} seconds per event", 
+                sw.Elapsed.TotalSeconds, sw.Elapsed.TotalSeconds / (batches * eventsPerBatch));
         }
     }
 }
