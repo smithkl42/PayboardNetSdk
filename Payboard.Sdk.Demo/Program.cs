@@ -13,7 +13,7 @@ namespace Payboard.Sdk.Demo
         private static void Main(string[] args)
         {
             // RunDemoAsync().Wait();
-            GenerateLoadAsync(1000, 1).Wait();
+            GenerateLoadAsync(1000, 10).Wait();
             Console.ReadLine();
         }
 
