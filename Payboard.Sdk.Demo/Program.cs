@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Payboard.Sdk.Entities;
 using Payboard.Sdk.Services;
@@ -13,7 +14,15 @@ namespace Payboard.Sdk.Demo
         private static void Main(string[] args)
         {
             // RunDemoAsync().Wait();
-            GenerateLoadAsync(1000, 10).Wait();
+            var task = GenerateLoadAsync(1000, 10);
+            task.Wait();
+            if (task.IsFaulted && task.Exception != null)
+            {
+                foreach (var ex in task.Exception.InnerExceptions)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
             Console.ReadLine();
         }
 
@@ -72,7 +81,7 @@ namespace Payboard.Sdk.Demo
             var sw = new Stopwatch();
             sw.Start();
             var service = new EventService();
-            var tasks = new List<Task>();
+            // var tasks = new List<Task>();
             for (var i = 0; i < batches; i++)
             {
                 var events = new List<CustomerUserEvent>();
@@ -87,11 +96,11 @@ namespace Payboard.Sdk.Demo
                     @event.EventName = "TestEventRecorded";
                     events.Add(@event);
                 }
-                tasks.Add(service.TrackCustomerUserEvents(events));
                 Console.WriteLine("Sending {0} events for customerUserId {1}", events.Count, customerUserid);
+                await service.TrackCustomerUserEvents(events);
             }
-            Console.WriteLine("Waiting for {0} tasks to return", tasks.Count);
-            await Task.WhenAll(tasks);
+            // Console.WriteLine("Waiting for {0} tasks to return", tasks.Count);
+            // await Task.WhenAll(tasks);
             sw.Stop();
             Console.WriteLine("All tasks finished; took {0} seconds, or {1} seconds per event", 
                 sw.Elapsed.TotalSeconds, sw.Elapsed.TotalSeconds / (batches * eventsPerBatch));
